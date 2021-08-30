@@ -1,7 +1,7 @@
 ﻿/************************************************************************************
 Title:						Port handling library 
 
-Supported microcontrollers: All ATmega
+Supported microcontrollers:			All ATmega
 		 
 Notes:						- By default port is set as an input in the Z-state
 *************************************************************************************/
