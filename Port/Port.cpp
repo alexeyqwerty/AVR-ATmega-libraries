@@ -5,7 +5,10 @@ Port::Port(volatile uint8_t* PORT, volatile uint8_t* DDR, volatile uint8_t* PIN,
 	this->PORT = PORT;
 	this->DDR = DDR;
 	this->PIN = PIN;
-	this->pinNum = pinNum;
+	this->pinNum = pinNum;	
+		
+	SetAsInput();
+	Clear();
 }
 
 void Port::SetAsInput()
