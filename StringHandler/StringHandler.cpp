@@ -2,7 +2,7 @@
 
 const char* StringHandler::FloatToString(float value, uint8_t digitsAfterDot)
 {
-	long integerPart = fabs(value);
+	uint32_t integerPart = fabs(value);
 	
 	uint8_t stringLength = 0;	
 	do
@@ -26,17 +26,15 @@ const char* StringHandler::FloatToString(float value, uint8_t digitsAfterDot)
 	
 	stringLength++;											//for '\0'
 			
-	char tempString[stringLength];	
-			
-	long tempIntegerPart = integerPart;	
+	char tempString[stringLength + 1];		
 			
 	char integerPartDigitsArray[integerPartLength + 1];		// "+ 1" for '\0'
 			
 	for(uint8_t i = 1; i <= integerPartLength; i++)
 	{
-		uint8_t dig = tempIntegerPart % 10;
+		uint8_t dig = integerPart % 10;
 				
-		tempIntegerPart /= 10;
+		integerPart /= 10;
 				
 		integerPartDigitsArray[integerPartLength - i] = dig + '0';
 	}
