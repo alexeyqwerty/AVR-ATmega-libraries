@@ -7,7 +7,8 @@ Notes:						- Supported encoders with- / without button
 #ifndef EC11_H_
 #define EC11_H_
 
-#include "Port.h"
+#include <stddef.h>
+#include "../Port/Port.h"
 
 enum Direction
 {
@@ -15,6 +16,8 @@ enum Direction
 	LEFT_DIR,
 	RIGHT_DIR	
 };
+
+#define numberOfChecks 10
 
 class EC11
 {
@@ -49,9 +52,21 @@ class EC11
 	
 	private:
 	
+	void Init(Port* A, Port* B, Port* BTN = NULL);
+	
 	Port* A;
 	Port* B;
 	Port* BTN;
+	
+	bool startRegistered;
+	bool stopRegistered;
+
+	Direction direction;
+
+	bool buttonStation;
+	bool contactFixed;
+	uint8_t onCounter;
+	uint8_t offCounter;
 };
 
 #endif /* EC11_H_ */

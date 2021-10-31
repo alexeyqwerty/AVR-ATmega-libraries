@@ -1,17 +1,6 @@
 ﻿#include "EC11.h"
 
-bool startRegistered = false;
-bool stopRegistered = false;
-
-Direction direction = NO_DIR;
-
-bool buttonStation = true;
-bool contactFixed = false;
-uint8_t onCounter = 0;
-uint8_t offCounter = 0;
-const uint8_t numberOfChecks = 10;
-
-EC11::EC11(Port* A, Port* B)
+void EC11::Init(Port* A, Port* B, Port* BTN /*= NULL*/)
 {
 	this->A = A;
 	this->A->SetAsInput();
@@ -20,34 +9,53 @@ EC11::EC11(Port* A, Port* B)
 	this->B = B;
 	this->B->SetAsInput();
 	this->B->Set();
+	
+	this->startRegistered = false;
+	this->stopRegistered = false;
+
+	this->direction = NO_DIR;
+	
+	if(BTN != NULL)
+	{
+		this->BTN = BTN;
+		this->BTN->SetAsInput();
+		this->BTN->Set();	
+		
+		this->buttonStation = true;
+		this->contactFixed = false;
+		this->onCounter = 0;
+		this->offCounter = 0;
+	}
+	
+}
+
+EC11::EC11(Port* A, Port* B)
+{
+	Init(A, B);
 }
 
 EC11::EC11(Port* A, Port* B, Port* BTN)
 {
-	EC11(A, B);
-	
-	this->BTN = BTN;
-	this->BTN->SetAsInput();
-	this->BTN->Set();	
+	Init(A, B, BTN);
 }
 
 Direction EC11::GetDirection()
 {
-	if(startRegistered == true)
+	if(this->startRegistered == true)
 	{		
 		if(this->A->IsClear() && this->B->IsClear())
 		{
-			startRegistered = false;
-			stopRegistered = true;			
+			this->startRegistered = false;
+			this->stopRegistered = true;			
 		}
 	}
 	
-	else if(stopRegistered == true)
+	else if(this->stopRegistered == true)
 	{
 		if(this->A->IsSet() && this->B->IsSet())
 		{
-			stopRegistered = false;
-			return direction;
+			this->stopRegistered = false;
+			return this->direction;
 		}
 	}
 	
@@ -55,14 +63,14 @@ Direction EC11::GetDirection()
 	{
 		if(this->A->IsClear() && this->B->IsSet())
 		{
-			startRegistered = true;				
-			direction = LEFT_DIR;
+			this->startRegistered = true;				
+			this->direction = LEFT_DIR;
 		}
 		
 		if(this->B->IsClear() && this->A->IsSet())
 		{
-			startRegistered = true;
-			direction = RIGHT_DIR;			
+			this->startRegistered = true;
+			this->direction = RIGHT_DIR;			
 		}
 	}
 	
@@ -75,34 +83,31 @@ bool EC11::ButtonPressed()
 	
 	bool buttonPressed = this->BTN->IsClear();
 	
-	if(buttonPressed)
-	{		
-		if(!contactFixed)
+	if(!this->contactFixed && buttonPressed)
+	{	
+		if(this->buttonStation == buttonPressed)
 		{
-			if(buttonStation == buttonPressed)
+			if(++this->onCounter > numberOfChecks)
 			{
-				if(++onCounter > numberOfChecks)
-				{
-					contactFixed = true;
-					return true;
-				}
-			}
-			else
-			{
-				buttonStation = buttonPressed;
-				onCounter = 0;
+				this->contactFixed = true;
+				return true;
 			}
 		}
+		else
+		{
+			this->buttonStation = buttonPressed;
+			this->onCounter = 0;
+		}		
 	}
 	
-	else if(contactFixed && !buttonPressed)
+	else if(this->contactFixed && !buttonPressed)
 	{
-		if(++offCounter > numberOfChecks)
+		if(++this->offCounter > numberOfChecks)
 		{
-			buttonStation = buttonPressed;
-			onCounter = 0;
-			offCounter = 0;
-			contactFixed = false;
+			this->buttonStation = buttonPressed;
+			this->onCounter = 0;
+			this->offCounter = 0;
+			this->contactFixed = false;
 		}
 	}
 	
