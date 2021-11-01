@@ -98,3 +98,13 @@ const char* StringHandler::Concat(const char* string_1, const char* string_2)
 	
 	return concatenatedString;
 }
+
+bool StringHandler::StartsWith(const char* string_1, const char* string_2)
+{
+	uint8_t str_1_Length = strlen(string_1);
+	uint8_t str_2_Length = strlen(string_2);
+	
+	if(str_2_Length > str_1_Length) return false;
+	
+	return (strncmp(string_1, string_2, str_2_Length) == 0);
+}

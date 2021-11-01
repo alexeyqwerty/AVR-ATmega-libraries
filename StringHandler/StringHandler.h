@@ -31,7 +31,8 @@ class StringHandler
 	Input:			First string
 					Second string
 	Returns:		Sum of two strings
-	How use:		const char* text = StringHandler::Concat(s1, s2);
+	How use:		IT'S NECESSARY
+					const char* text = StringHandler::Concat(s1, s2);
 					.
 					.	...do something with text...
 					.
@@ -39,6 +40,17 @@ class StringHandler
 					text = NULL;
 	************************************************************************/	
 	static const char* Concat(const char* string_1, const char* string_2);
+	
+	/***********************************************************************
+	Function:		StartsWith()
+	Purpose:		Determines whether the beginning of string_1 coincides
+					with string_2. Returns false if the string_2 length greater
+					string_1 length
+	Input:			First string
+					Second string
+	Returns:		True - if the string_2 matches, false - if not	
+	************************************************************************/	
+	static bool StartsWith(const char* string_1, const char* string_2);
 };
 
 #endif /* HANDLEROFNUMBERS_H_ */
