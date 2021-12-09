@@ -8,6 +8,8 @@ Title:						Library for 8-bit expander PCF8574 using I2C
 #include <avr/io.h>
 #include "TWI.h"
 
+#define PCF8574_BITRATE 100000
+
 class PCF8574
 {
 	public:

@@ -17,6 +17,8 @@ class TWI
 	Returns:		No
 	************************************************************************/
 	TWI(uint32_t processorFrequency);
+	
+	void SetBitRate(uint32_t bitRate);
 
 	/***********************************************************************
 	Function:		SendByte()
@@ -26,13 +28,13 @@ class TWI
 					- Data
 	Returns:		No
 	************************************************************************/
-	void SendByte(uint32_t bitrate, uint8_t address, uint8_t data);	
+	void SendByte(uint8_t address, uint8_t data);	
 	
 	private:
 	
 	uint32_t processorFrequency;
 	
-	uint32_t bitrate;
+	uint32_t bitRate;
 };
 
 #endif

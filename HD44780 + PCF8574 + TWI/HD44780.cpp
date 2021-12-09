@@ -1,11 +1,10 @@
 #include "HD44780.h"
 
-void HD44780::SelectDevice()
+void HD44780::SelectDevice(uint8_t data)
 {
-	uint8_t _data = 0;
-	_data |= (1<<E)|(1<<LED);
-	this->pcf8574->SetOutput(_data);
-	_delay_us(200);
+	data |= (1<<E);	
+	this->pcf8574->SetOutput(data);
+	_delay_us(200);	
 }
 
 void HD44780::LatchData(uint8_t data)
@@ -21,13 +20,14 @@ void HD44780::SendByte(char data, DataType dataType)
 	
 	for(uint8_t i = 0; i < 2; i++)
 	{
-		SelectDevice();				
-		
 		_data |= (1<<LED);
 		_data &= ~(1<<RW);
+		
 		if(dataType == COMMAND) _data &= ~(1<<RS);
 		else if(dataType == DATA) _data |= (1<<RS);
-			
+		
+		SelectDevice(_data);				
+		
 		LatchData(_data);
 		
 		_data = data << 4;
@@ -54,20 +54,18 @@ HD44780::HD44780(PCF8574* pcf8574, uint8_t symbolsInLine)
 	this->pcf8574 = pcf8574;
 	this->symbolsInLine = symbolsInLine;	
 	
-	uint8_t data = (1<<D4)|(1<<D5);
+	uint8_t data = (1<<D4)|(1<<D5)|(1<<LED);
 	
 	for(char i = 0; i < 2; i++)
 	{		
- 		SelectDevice(); 		 
+ 		SelectDevice(data);		
  		LatchData(data); 		
 	}
 	
 	data = 0;
+	data |= (1<<D5)|(1<<LED);
 	
- 	SelectDevice();
- 		
- 	data |= (1<<D5);
- 		
+ 	SelectDevice(data); 	
  	LatchData(data);
 	
 	SendByte(0b00101000, COMMAND);
@@ -127,17 +125,17 @@ void HD44780::PrintTextWithAlignment(const char* text, uint8_t line, Alignment a
 	
 	switch(alignment)
 	{
-		case LEFT:
+		case LEFT_SIDE:
 		{
 			slot = 0;
 		}break;
 		
-		case RIGHT:
+		case RIGHT_SIDE:
 		{
 			slot = symbolsInLine - strlen(text);
 		}break;
 		
-		case CENTER:
+		case CENTER_SCREEN:
 		{
 			slot = (symbolsInLine - strlen(text)) / 2;
 		}break;

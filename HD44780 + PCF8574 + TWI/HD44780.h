@@ -20,10 +20,8 @@ Notes:						- 4-bits interface mode
 #include <stdlib.h>
 #include <string.h>
 
-#define F_CPU 8000000
-#include <util/delay.h>
-
-#include "PCF8574.h"
+#include "../../Config/DeviceConfigurations.h"
+#include "../PCF8574/PCF8574.h"
 
 /***********************************************************************
 Description:		Port numbers for connecting LCD
@@ -42,9 +40,9 @@ Description:		Alignment enumeration
 ************************************************************************/
 enum Alignment
 {
-	LEFT,
-	RIGHT,
-	CENTER	
+	LEFT_SIDE,
+	RIGHT_SIDE,
+	CENTER_SCREEN	
 };
 
 /***********************************************************************
@@ -132,7 +130,7 @@ class HD44780
 		
 	uint8_t symbolsInLine;
 	
-	void SelectDevice();	
+	void SelectDevice(uint8_t data);	
 	
 	void LatchData(uint8_t data);
 	
