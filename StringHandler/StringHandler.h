@@ -22,6 +22,13 @@ class StringHandler
 	Input:			Value for converting
 					Number digits after dot
 	Returns:		Constant char pointer to a converted string
+	How use:		IT'S NECESSARY
+					const char* text = FloatToString(value, digitsAfterDot);
+					.
+					.	...do something with text...
+					.
+					free((char*)text);
+					text = NULL;
 	************************************************************************/
 	static const char* FloatToString(float value, uint8_t digitsAfterDot);	
 	

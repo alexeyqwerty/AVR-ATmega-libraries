@@ -24,9 +24,7 @@ const char* StringHandler::FloatToString(float value, uint8_t digitsAfterDot)
 	
 	if(value < 0) stringLength++;							//for '-'
 	
-	stringLength++;											//for '\0'
-			
-	char tempString[stringLength + 1];		
+	stringLength++;											//for '\0'	
 			
 	char integerPartDigitsArray[integerPartLength + 1];		// "+ 1" for '\0'
 			
@@ -41,22 +39,21 @@ const char* StringHandler::FloatToString(float value, uint8_t digitsAfterDot)
 	
 	integerPartDigitsArray[integerPartLength] = '\0';
 				
-	const char* resultString = integerPartDigitsArray;
+	char* resultString = (char*)malloc(stringLength);
 			
 	if(value < 0)
 	{
-		strlcpy(tempString, "-", stringLength);
-		strlcat(tempString, resultString, stringLength);
+		strlcpy(resultString, "-", stringLength);
+		strlcat(resultString, integerPartDigitsArray, stringLength);
 	}
-	else strlcpy(tempString, resultString, stringLength);
+	else strlcpy(resultString, integerPartDigitsArray, stringLength);
 	
 	if(digitsAfterDot == 0)
 	{		
-		resultString = tempString;		
 		return resultString;
 	}
 		
-	strlcat(tempString, ".", stringLength);
+	strlcat(resultString, ".", stringLength);
 		
 	value = fabs(value) - integerPart;	
 			
@@ -74,13 +71,9 @@ const char* StringHandler::FloatToString(float value, uint8_t digitsAfterDot)
 				
 		fractionalPartDigitsArray[digitsAfterDot - i] = dig + '0';
 	}			
-	fractionalPartDigitsArray[digitsAfterDot] = '\0';
-	
-	resultString = fractionalPartDigitsArray;
+	fractionalPartDigitsArray[digitsAfterDot] = '\0';	
 			
-	strlcat(tempString, resultString, stringLength);
-			
-	resultString = tempString;
+	strlcat(resultString, fractionalPartDigitsArray, stringLength);	
 	
 	return resultString;
 }
