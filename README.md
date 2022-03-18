@@ -5,7 +5,8 @@ This files were created in Microchip Studio (Atmel Studio) and tested with some 
 
 Description of entites:
 
--=Port=-
+<h4>-=Port=-</h4>
+
 This class is convenient shell for microcontrollers ports control. It allows to set port as input/output, change logic level and read the port state.
 
 to be continue...
