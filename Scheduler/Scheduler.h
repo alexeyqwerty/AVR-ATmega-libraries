@@ -14,7 +14,6 @@ Notes:						- Using timer T0
 #define SCHEDULER_H_
 
 #include <avr/io.h>
-#include "../Config/Config.h"
 
 #if defined(__AVR_ATmega16__) || defined(__AVR_ATmega32__)
 	#define TCCR TCCR0	
