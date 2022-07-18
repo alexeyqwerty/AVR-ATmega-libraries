@@ -1,12 +1,12 @@
 #include "AT24C256.h"
 
-AT24C256::AT24C256(TWI *twi, uint8_t A2, uint8_t A1, uint8_t A0, uint32_t bitrate)
+AT24C256::AT24C256(TWI *twi, uint8_t A2, uint8_t A1, uint8_t A0, uint32_t clockFrequency)
 {
 	this->twi = twi;
 	
 	this->address = 0b10100000 | (A2 << 3) | (A1 << 2) | (A0 << 1);
 	
-	this->clockFrequency = bitrate;
+	this->clockFrequency = clockFrequency;
 	
 	this->dataAddressPtr = (uint8_t*)&this->dataAddress;
 	
