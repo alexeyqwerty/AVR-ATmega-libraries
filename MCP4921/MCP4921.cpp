@@ -32,27 +32,6 @@ void MCP4921 ::SetOutput(uint16_t data)
 	_data = data;
 	
 	this->buffer->Add(_data, sizeof(uint8_t));
-	
-	
-// 	uint8_t _data = data >> 8;
-// 	_data |= (AB<<7)|(BUF<<6)|(GA<<5)|(SHDN<<4);	
-// 
-// 	spiMaster->SetMode(RISING, START);
-// 	
-// 	this->CS->Clear();
-// 	
-// 	spiMaster->SendByte(_data);
-// 	spiMaster->ReceiveByte();	
-// 	
-// 	_data = data;
-// 	
-// 	spiMaster->SendByte(_data);		
-// 	spiMaster->ReceiveByte();	
-// 	
-// 	this->CS->Set();
-// 	
-// 	this->LDAC->Clear();
-// 	this->LDAC->Set();
 }
 
 MCP4921::~MCP4921() {}
