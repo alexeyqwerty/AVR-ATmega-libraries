@@ -14,10 +14,7 @@ Notes:						- supports up to 128 devices
 #include <avr/io.h>
 #include <stdlib.h>
 
-/************************************************************************************
-Description:		ITWI devices quantity (max 128)
-*************************************************************************************/
-#define TWI_DEVICES 3
+#include "Devices.h"
 
 /************************************************************************************
 Description:		TWI status codes
@@ -180,10 +177,7 @@ class TWI
 	
 	uint32_t clockFrequency;
 	
-	ITWI *devices[TWI_DEVICES];
-	
-	uint8_t devicesQuantiy;
-	uint8_t selectedDevice;
+	Devices<ITWI> *devices;
 };
 
 /***********************************************************************
