@@ -2,19 +2,14 @@
 
 TWI::TWI(uint32_t processorFrequency)
 {
-	this->processorFrequency = processorFrequency;
+	this->devices = new Devices<ITWI>();
 	
-	this->devicesQuantiy = 0;
-	this->selectedDevice = 0;
+	this->processorFrequency = processorFrequency;
 }
 
 void TWI::AddDevice(ITWI *device)
 {
-	if(devicesQuantiy < TWI_DEVICES)
-	{
-		devices[devicesQuantiy] = device;
-		devicesQuantiy++;
-	}
+	this->devices->Add(device);
 }
 
 void TWI::SetClockFrequency(uint32_t clockFrequency)
@@ -30,22 +25,22 @@ void TWI::CheckDevices()
 {
 	if(TWCR & (1<<TWIE)) return;
 	
-	if(devices[selectedDevice]->GetTransactionStatus() == TWI_InProcess)
+	if(this->devices->CurrentDevice()->GetTransactionStatus() == TWI_InProcess)
 	{
-		SetClockFrequency(devices[selectedDevice]->ClockFrequency());
+		SetClockFrequency(this->devices->CurrentDevice()->ClockFrequency());
 		
 		Start();		
 	}
 	
 	else
 	{
-		++selectedDevice %= devicesQuantiy;
+		this->devices->Next();
 	}
 }
 
 void TWI::HandleDataChange()
 {	
-	devices[selectedDevice]->NextOperation((TWI_Status)(TWSR & TWI_NoActions));
+	this->devices->CurrentDevice()->NextOperation((TWI_Status)(TWSR & TWI_NoActions));
 }
 
 void TWI::Start()
@@ -79,19 +74,22 @@ void TWI::Stop()
 {
 	TWCR = (1<<TWEN)|(1<<TWINT)|(1<<TWSTO)|(0<<TWIE);
 	
-	devices[selectedDevice]->NextOperation(TWI_NoActions);
+	this->devices->CurrentDevice()->NextOperation(TWI_NoActions);
 	
-	++selectedDevice %= devicesQuantiy;
+	this->devices->Next();
 }
 
 void TWI::DisableInterrupt()
 {
 	TWCR = (1<<TWEN)|(0<<TWIE)|(0<<TWINT)|(0<<TWEA)|(0<<TWSTA)|(1<<TWSTO)|(0<<TWWC);
 	
-	++selectedDevice %= devicesQuantiy;
+	this->devices->Next();
 }
 
-TWI::~TWI(){}
+TWI::~TWI()
+{
+	delete this->devices;
+}
 
 void* TWI::operator new(size_t size)
 {

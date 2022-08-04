@@ -4,7 +4,6 @@ Buffer::Buffer(uint8_t bufferSize)
 {
 	this->bufferSize = bufferSize;
 	this->bufferCounter = 0;
-	this->dataCounter = 0;
 	this->writePtr = 0;
 	this->readPtr = 0;
 	

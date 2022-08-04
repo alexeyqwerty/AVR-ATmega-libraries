@@ -1,8 +1,6 @@
 ﻿/************************************************************************************
 Title:						Library for TWI (I2C) with using interrupts
-
 Support:					All ATmega- microcontrollers
-
 Notes:						- supports up to 128 devices
 							- all device classes must implement the ITWI interface
 							- only for the master mode
@@ -14,10 +12,7 @@ Notes:						- supports up to 128 devices
 #include <avr/io.h>
 #include <stdlib.h>
 
-/************************************************************************************
-Description:		ITWI devices quantity (max 128)
-*************************************************************************************/
-#define TWI_DEVICES 3
+#include "Devices.h"
 
 /************************************************************************************
 Description:		TWI status codes
@@ -180,27 +175,19 @@ class TWI
 	
 	uint32_t clockFrequency;
 	
-	ITWI *devices[TWI_DEVICES];
-	
-	uint8_t devicesQuantiy;
-	uint8_t selectedDevice;
+	Devices<ITWI> *devices;
 };
 
 /***********************************************************************
 								HOW IT USE
 						
 - First need create TWI object:
-
 	TWI *twi = new TWI(F_CPU);
-
 - Next, need create object(s) which implement ITWI interface and
   include twi pointer:
-
 	SomeITWI *someITWI = new SomeITWI(twi, ...);
 	...
-
 - Add to twi object created objects:
-
 	twi->AddDevice(someITWI);
 	
 - From time to time call CheckDevices() method:
@@ -208,7 +195,6 @@ class TWI
 	twi->CheckDevices();
 	
 - In TWI interrupt call HandleDataChange() method:
-
 	ISR(TWI_vect)
 	{
 		twi->HandleDataChange();
