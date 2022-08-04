@@ -80,7 +80,6 @@ class Buffer
 	uint8_t **buffer;
 	uint8_t *dataSize;
 	
-	uint8_t dataCounter;
 	uint8_t bufferCounter;
 	uint8_t writePtr;
 	uint8_t readPtr;
