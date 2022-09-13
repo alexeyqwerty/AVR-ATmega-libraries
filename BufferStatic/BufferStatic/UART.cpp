@@ -11,14 +11,8 @@ UART::UART(uint32_t baudrate, uint32_t processorFrequency, uint8_t bufferSize, u
 	this->TX_Buffer = new Buffer(bufferSize, messageMaxSize);
 		
  	this->messageReceptionStarted = false;	
-// 	this->RX_MessagesCount = 0;
  	this->RX_CharsCounter = 0;
-// 	
-// 	do 
-// 	{
-// 		this->RX_Message = (uint8_t*)malloc(20);
-// 	}while(this->RX_Message == nullptr);		
-// 	
+
  	this->RX_Buffer = new Buffer(bufferSize, messageMaxSize);
 	
 	uint16_t ubrr_temp = (processorFrequency / (baudrate * 16)) - 1;
@@ -86,13 +80,8 @@ void UART::Receive()
 	}
 	
 	else if (data == end_mark)
-	{		
-		if(this->RX_MessagesCount < this->RX_Buffer->BufferSize())
-		{
-			this->RX_MessagesCount++;	
-			
-			this->RX_Buffer->Save();
-		}
+	{	
+		this->RX_Buffer->Save();
 		
 		this->messageReceptionStarted = false;
 		
@@ -129,9 +118,6 @@ UART::~UART()
 	
 	delete this->RX_Buffer;
 	this->RX_Buffer = nullptr;
-	
-	free(this->RX_Message);
-	this->RX_Message = nullptr;
 }
 
 void* UART::operator new(size_t size)

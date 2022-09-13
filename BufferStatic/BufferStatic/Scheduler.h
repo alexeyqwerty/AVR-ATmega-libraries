@@ -29,16 +29,7 @@ struct Task
 {
 	void (*function)(void);
 	uint16_t executionPeriod;
-	uint16_t timeLeft;
-	bool isRun;
-	
-	void operator=(Task t)
-	{
-		this->function = t.function;
-		this->executionPeriod = t.executionPeriod;
-		this->timeLeft = t.timeLeft;
-		this->isRun = t.isRun;
-	}
+	uint16_t timeLeft;	
 };
 
 class Scheduler

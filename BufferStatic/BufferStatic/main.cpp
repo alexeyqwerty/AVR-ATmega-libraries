@@ -8,7 +8,7 @@
 #define UART_BAUD 9600
 
 Scheduler *sch = new Scheduler(F_CPU, 5);
-UART *uart = new UART(UART_BAUD, F_CPU, 10, 10);
+UART *uart = new UART(UART_BAUD, F_CPU, 15, 15);
 
 ISR(SCHEDULER_INTERRUPT)
 {
@@ -27,6 +27,7 @@ ISR(USART_TX_INTERRUPT)
 }
 
 uint32_t sec = 0;
+uint8_t count = 0;
 
 void S()
 {
@@ -63,12 +64,26 @@ void F2()
 void F1()
 {
 	PORTC ^= (1<<0);
+	count++;
 	uart->UploadingDataForTransfer("F1 - ");
 	const char *s = StringHandler::FloatToString(sec, 0);
 	uart->UploadingDataForTransfer(s);
 	free((char*)s);
 	s = nullptr;
 	uart->UploadingDataForTransfer(" sec\r");
+	
+	if(count == 5) 
+	{
+		sch->DeleteTask(F2);
+		uart->UploadingDataForTransfer("F2 deleted\r");
+	}
+	
+	else if(count >= 20)
+	{
+		count = 0;
+		sch->AddTask(F2, 2000);
+		uart->UploadingDataForTransfer("F2 added\r");
+	}
 }
 
 
@@ -81,8 +96,8 @@ int main(void)
 	sch->AddTask(F1, 1000);
 	sch->AddTask(T, 10);
 	sch->AddTask(F2, 2000);
-	sch->AddTask(F3, 500);	
-		
+	sch->AddTask(F3, 500);		
+	
 	sei();
 	
     /* Replace with your application code */

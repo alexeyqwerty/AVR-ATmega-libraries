@@ -119,9 +119,7 @@ class UART
 	Buffer *TX_Buffer;	
 	
 	bool messageReceptionStarted;
-	uint8_t RX_MessagesCount;
 	uint8_t RX_CharsCounter;
-	uint8_t *RX_Message;
 	
 	Buffer *RX_Buffer;
 };

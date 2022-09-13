@@ -39,6 +39,8 @@ void Buffer::Save()
 {
 	if(this->bufferCounter == this->bufferSize) return;
 	
+	if(this->dataSize[this->writePtr] == 0) return;
+	
 	++this->writePtr %= this->bufferSize;	
 	
 	this->bufferCounter++;

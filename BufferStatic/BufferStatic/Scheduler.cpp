@@ -70,8 +70,7 @@ void Scheduler::AddTask(void (*function)(void), uint16_t executionPeriod)
 			functionExist = true;
 				
 			this->tasks[i]->executionPeriod = executionPeriod;
-			this->tasks[i]->timeLeft = 0;	
-			this->tasks[i]->isRun = false;			
+			this->tasks[i]->timeLeft = 0;					
 				
 			break;		
 		}
@@ -83,8 +82,7 @@ void Scheduler::AddTask(void (*function)(void), uint16_t executionPeriod)
 			
 		task.function = function;
 		task.executionPeriod = executionPeriod;
-		task.timeLeft = 0;
-		task.isRun = false;		
+		task.timeLeft = 0;		
 		
 		memcpy(this->tasks[this->tasksCounter], &task, sizeof(struct Task));		
 						
@@ -101,12 +99,16 @@ void Scheduler::DeleteTask(void (*function)(void))
 	for(uint8_t i = 0; i < this->tasksCounter; i++)
 	{
 		if(this->tasks[i]->function == function)
-		{				
-			*this->tasks[i] = *this->tasks[--this->tasksCounter];
-								
+		{
+			this->tasksCounter--;
+			
+			memcpy(this->tasks[i], this->tasks[this->tasksCounter], sizeof(struct Task));
+											
 			break;
 		}
 	}	
+	
+	this->selectedTask = 0;
 		
 	if(this->tasksCounter == 0) DisableDispatch();	
 }
@@ -115,12 +117,9 @@ void Scheduler::UpdateLeftTime()
 {
 	TCNT0 = 0;
 	
-	for(uint8_t i = 0; i < tasksCounter; i++)
+	for(uint8_t i = 0; i < this->tasksCounter; i++)
 	{
-		if(!this->tasks[i]->isRun)
-		{
-			this->tasks[i]->timeLeft++;
-		}
+		this->tasks[i]->timeLeft++;		
 	}
 }
 
@@ -129,11 +128,9 @@ void Scheduler::DispatchTasks()
 	if(this->tasksCounter == 0) return;
 	
 	if(this->tasks[this->selectedTask]->timeLeft >= this->tasks[this->selectedTask]->executionPeriod)
-	{
-		this->tasks[this->selectedTask]->isRun = true;			
-		this->tasks[this->selectedTask]->timeLeft = 0;					
-		this->tasks[this->selectedTask]->function();			
-		this->tasks[this->selectedTask]->isRun = false;
+	{				
+		this->tasks[this->selectedTask]->timeLeft -= this->tasks[this->selectedTask]->executionPeriod;					
+		this->tasks[this->selectedTask]->function();				
 	}			
 	
 	++this->selectedTask %= this->tasksCounter;
@@ -177,7 +174,7 @@ void* Scheduler::operator new(size_t size)
 	void* ptr;
 		
 	do
-	ptr = malloc(size);
+		ptr = malloc(size);
 	while(ptr == nullptr);
 		
 	return ptr;
